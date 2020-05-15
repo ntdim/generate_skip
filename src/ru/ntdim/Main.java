@@ -1,33 +1,37 @@
 package ru.ntdim;
 
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        String fileIn = System.getProperty("user.dir") + "/" + "current.csv";
         if (args.length == 0) {
             System.out.printf("Не указан входящий файл!");
-            return;
+        } else {
+            fileIn = System.getProperty("user.dir") + "/" + args[0];
         }
-        String fileIn = args[0];
-        try (Stream<String> stream = Files.lines(Paths.get(fileIn))) {
-            List<String> outList = stream
+        System.out.println("Ищем файл: " + fileIn);
+
+        if (new File(fileIn).exists()) {
+            List<String> inFile = Files.readAllLines(Paths.get(fileIn), StandardCharsets.UTF_8);
+            List<String> outFile = inFile.stream()
                     .map(s -> s.substring(1, s.indexOf(";")))
                     .map(s -> s.replaceAll("\"", ""))
+                    .map(s -> s.replaceAll("\'", ""))
                     .collect(Collectors.toList());
-
-            try (PrintStream out = new PrintStream(new FileOutputStream("skip.txt"))) {
-                out.print(outList);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Загружено " + inFile.size() + " записей.");
+            Files.write(Paths.get("skip.txt"), outFile, StandardOpenOption.CREATE);
+            System.out.printf("Результат сохранен в файл skip.txt");
+        } else {
+            System.out.println("Указанный файл не существует.");
         }
     }
 }
