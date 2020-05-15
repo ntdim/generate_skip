@@ -21,7 +21,7 @@ public class Main {
         System.out.println("Ищем файл: " + fileIn);
 
         if (new File(fileIn).exists()) {
-            List<String> inFile = Files.readAllLines(Paths.get(fileIn), StandardCharsets.UTF_8);
+            List<String> inFile = Files.readAllLines(Paths.get(fileIn), StandardCharsets.ISO_8859_1);
             List<String> outFile = inFile.stream()
                     .map(s -> s.substring(1, s.indexOf(";")))
                     .map(s -> s.replaceAll("\"", ""))
