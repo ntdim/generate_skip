@@ -22,14 +22,20 @@ public class Main {
 
         if (new File(fileIn).exists()) {
             List<String> inFile = Files.readAllLines(Paths.get(fileIn), StandardCharsets.ISO_8859_1);
-            List<String> outFile = inFile.stream()
-                    .map(s -> s.substring(1, s.indexOf(";")))
-                    .map(s -> s.replaceAll("\"", ""))
-                    .map(s -> s.replaceAll("\'", ""))
-                    .collect(Collectors.toList());
-            System.out.println("Загружено " + inFile.size() + " записей.");
-            Files.write(Paths.get("skip.txt"), outFile, StandardOpenOption.CREATE);
-            System.out.printf("Результат сохранен в файл skip.txt");
+            try {
+                List<String> outFile = inFile.stream()
+                        .map(s -> s.substring(1, s.indexOf(";")))
+                        .map(s -> s.replaceAll("\"", ""))
+                        .map(s -> s.replaceAll("\'", ""))
+                        .collect(Collectors.toList());
+                System.out.println("Загружено " + inFile.size() + " записей.");
+                Files.write(Paths.get("skip.txt"), outFile, StandardOpenOption.CREATE);
+                System.out.printf("Результат сохранен в файл skip.txt");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+
         } else {
             System.out.println("Указанный файл не существует.");
         }
