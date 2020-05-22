@@ -24,9 +24,8 @@ public class Main {
             List<String> inFile = Files.readAllLines(Paths.get(fileIn), StandardCharsets.ISO_8859_1);
             try {
                 List<String> outFile = inFile.stream()
-                        .map(s -> s.substring(1, s.indexOf(";")))
-                        .map(s -> s.replaceAll("\"", ""))
-                        .map(s -> s.replaceAll("\'", ""))
+                        .map(Main::subStringLocal)
+                        .map(Main::replaceAlLocal)
                         .collect(Collectors.toList());
                 System.out.println("Загружено " + inFile.size() + " записей.");
                 Files.write(Paths.get("skip.txt"), outFile, StandardOpenOption.CREATE);
@@ -39,5 +38,27 @@ public class Main {
         } else {
             System.out.println("Указанный файл не существует.");
         }
+    }
+
+    private static String subStringLocal(String s) {
+        String result;
+        try {
+            result = s.substring(1, s.indexOf(";"));
+        } catch (Exception e) {
+            System.out.println("При обработке строки " + s + "/n произошла ошибка: /n" + e.getMessage());
+            return "0";
+        }
+        return result;
+    }
+
+    private static String replaceAlLocal(String s) {
+        String result;
+        try {
+            result = s.replaceAll("\"", "").replaceAll("\'", "");
+        } catch (Exception e) {
+            System.out.println("При обработке строки " + s + "/n произошла ошибка: /n" + e.getMessage());
+            return "0";
+        }
+        return result;
     }
 }
